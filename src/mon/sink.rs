@@ -1,1 +1,1 @@
-pub trait Sink: core::fmt::Write {}
+pub trait Sink: core::fmt::Write + Sync {}
