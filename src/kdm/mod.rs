@@ -1,10 +1,10 @@
 #[derive(Clone, Copy, Debug)]
-pub struct Paddr(usize);
+pub struct KePaddr(usize);
 
 #[derive(Clone, Copy, Debug)]
-pub struct Vaddr(usize);
+pub struct KeVaddr(usize);
 
-impl Paddr {
+impl KePaddr {
     #[inline(always)]
     pub const fn from_raw(r: usize) -> Self {
         Self(r)
@@ -16,7 +16,7 @@ impl Paddr {
     }
 }
 
-impl Vaddr {
+impl KeVaddr {
     #[inline(always)]
     pub const fn from_raw(r: usize) -> Self {
         Self(r)

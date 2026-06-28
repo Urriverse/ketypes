@@ -1,8 +1,8 @@
-pub enum Format {
+pub enum KeFormat {
     Pretty,
     Regular,
 }
 
-pub trait Sink: core::fmt::Write + Sync + Send {
-    fn format(&self) -> Format;
+pub trait KeSink: core::fmt::Write + Sync + Send {
+    fn format(&self) -> KeFormat;
 }

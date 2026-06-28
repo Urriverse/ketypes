@@ -3,16 +3,16 @@ use core::{
     sync::atomic::{AtomicBool, Ordering}
 };
 
-pub struct Mutex<T> {
+pub struct KeMutex<T> {
     lock: AtomicBool,
     data: UnsafeCell<T>,
 }
 
 // Safety: Mutex is Send and Sync if T is Send.
-unsafe impl<T: Send> Send for Mutex<T> {}
-unsafe impl<T: Send> Sync for Mutex<T> {}
+unsafe impl<T: Send> Send for KeMutex<T> {}
+unsafe impl<T: Send> Sync for KeMutex<T> {}
 
-impl<T> Mutex<T> {
+impl<T> KeMutex<T> {
     pub const fn new(t: T) -> Self {
         Self {
             lock: AtomicBool::new(false),
@@ -26,7 +26,7 @@ impl<T> Mutex<T> {
         }
     }
 
-    pub fn lock(&self) -> MutexGuard<'_, T> {
+    pub fn lock(&self) -> KeMutexGuard<'_, T> {
         while self
             .lock
             .compare_exchange_weak(false, true, Ordering::Acquire, Ordering::Relaxed)
@@ -35,27 +35,27 @@ impl<T> Mutex<T> {
             core::hint::spin_loop();
         }
 
-        MutexGuard { mutex: self }
+        KeMutexGuard { mutex: self }
     }
 
-    pub fn try_lock(&self) -> Option<MutexGuard<'_, T>> {
+    pub fn try_lock(&self) -> Option<KeMutexGuard<'_, T>> {
         if self
             .lock
             .compare_exchange(false, true, Ordering::Acquire, Ordering::Relaxed)
             .is_ok()
         {
-            Some(MutexGuard { mutex: self })
+            Some(KeMutexGuard { mutex: self })
         } else {
             None
         }
     }
 }
 
-pub struct MutexGuard<'a, T> {
-    mutex: &'a Mutex<T>,
+pub struct KeMutexGuard<'a, T> {
+    mutex: &'a KeMutex<T>,
 }
 
-impl<T> core::ops::Deref for MutexGuard<'_, T> {
+impl<T> core::ops::Deref for KeMutexGuard<'_, T> {
     type Target = T;
 
     fn deref(&self) -> &T {
@@ -63,13 +63,13 @@ impl<T> core::ops::Deref for MutexGuard<'_, T> {
     }
 }
 
-impl<T> core::ops::DerefMut for MutexGuard<'_, T> {
+impl<T> core::ops::DerefMut for KeMutexGuard<'_, T> {
     fn deref_mut(&mut self) -> &mut T {
         unsafe { &mut *self.mutex.data.get() }
     }
 }
 
-impl<T> Drop for MutexGuard<'_, T> {
+impl<T> Drop for KeMutexGuard<'_, T> {
     fn drop(&mut self) {
         self.mutex.lock.store(false, Ordering::Release);
     }

@@ -1,64 +1,64 @@
 use alloc::string::String;
 use alloc::sync::Arc;
-use crate::vfs::{InodeId, Inode, Kind, Error};
+use crate::vfs::{KeInodeId, KeInode, Kind, KeFsError};
 
-pub trait FileSystem: Send + Sync {
+pub trait KeFileSystem: Send + Sync {
     fn lookup(
         &self   ,
-        dir     : InodeId,
+        dir     : KeInodeId,
         name    : &str
-    )   ->      Option<InodeId>
+    )   ->      Option<KeInodeId>
     ;
     fn readdir(
         &self   ,
-        dir     : InodeId,
+        dir     : KeInodeId,
         offset  : usize
-    )   ->      Option<(String, InodeId)>
+    )   ->      Option<(String, KeInodeId)>
     ;
     fn read(
         &self   ,
-        file    : InodeId,
+        file    : KeInodeId,
         offset  : usize,
         buf     : &mut [u8]
-    )   ->      Result<usize, Error>
+    )   ->      Result<usize, KeFsError>
     ;
     fn write(
         &self   ,
-        file    : InodeId,
+        file    : KeInodeId,
         offset  : usize,
         buf     : &[u8]
-    )   ->      Result<usize, Error>
+    )   ->      Result<usize, KeFsError>
     ;
     fn truncate(
         &self   ,
-        file    : InodeId,
+        file    : KeInodeId,
         new_size: usize
-    )   ->      Result<(), Error>
+    )   ->      Result<(), KeFsError>
     ;
     fn unlink(
         &self   ,
-        dir     : InodeId,
+        dir     : KeInodeId,
         name    : &str
-    )   ->      Result<(), Error>
+    )   ->      Result<(), KeFsError>
     ;
     fn link(
         &self   ,
-        parent  : InodeId,
+        parent  : KeInodeId,
         name    : &str,
-        child   : InodeId
-    )   ->      Result<(), Error>
+        child   : KeInodeId
+    )   ->      Result<(), KeFsError>
     ;
     fn new(
         &self   ,
         mb_id   : u32,
-        inode   : Inode,
+        inode   : KeInode,
         kind    : Kind
-    )   ->      Result<InodeId, Error>
+    )   ->      Result<KeInodeId, KeFsError>
     ;
     fn stat(
         &self   ,
-        inode   : InodeId
-    )   ->      Option<Inode>
+        inode   : KeInodeId
+    )   ->      Option<KeInode>
     ;
     fn set_mb_id(
         &self   ,
@@ -67,13 +67,15 @@ pub trait FileSystem: Send + Sync {
     ;
 }
 
-pub struct MetaBlock {
-    pub id: u32,
-    pub fs: Arc<dyn FileSystem>,
+pub type KeMetaBlockId = u32;
+
+pub struct KeMetaBlock {
+    pub id: KeMetaBlockId,
+    pub fs: Arc<dyn KeFileSystem>,
 }
 
-impl MetaBlock {
-    pub const fn new(id: u32, fs: Arc<dyn FileSystem>) -> Self {
-        MetaBlock { id, fs }
+impl KeMetaBlock {
+    pub const fn new(id: KeMetaBlockId, fs: Arc<dyn KeFileSystem>) -> Self {
+        KeMetaBlock { id, fs }
     }
 }

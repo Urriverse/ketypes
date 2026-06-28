@@ -1,6 +1,6 @@
 extrum::extrum! {
     #[derive(Clone, Copy, PartialEq)]
-    pub enum Flags: u64 {
+    pub enum KeInodeFlags: u64 {
         DIR         = 1 << 0    ,
         USER_READ   = 1 << 1    ,
         USER_WRITE  = 1 << 2    ,
@@ -17,7 +17,7 @@ extrum::extrum! {
     }
 }
 
-impl Flags {
+impl KeInodeFlags {
     pub fn level(self) -> u16 { (self.0 >> 48) as u16 }
     pub fn set_level(&mut self, level: u16) {
         self.0 &= !0 << 16 >> 16;
@@ -27,7 +27,7 @@ impl Flags {
 
 #[repr(C, align(8))]
 #[derive(Debug, Clone, Copy, PartialEq, Eq, PartialOrd, Ord, Hash)]
-pub struct InodeId(pub u32, pub u32); // (inode number, metablock id)
+pub struct KeInodeId(pub u32, pub u32); // (inode number, metablock id)
 
 #[repr(u16)]
 #[derive(Debug, Clone, Copy, PartialEq, Eq)]
@@ -42,10 +42,10 @@ pub enum Kind {
 
 #[repr(C, align(128))]
 #[derive(Debug, Clone, Copy, PartialEq, Eq)]
-pub struct Inode {
-    pub id      : InodeId   ,
+pub struct KeInode {
+    pub id      : KeInodeId   ,
     pub kind    : Kind      ,
-    pub flags   : Flags     ,
+    pub flags   : KeInodeFlags     ,
     pub size    : u64       ,
     pub uid     : u16       ,
     pub gid     : u16       ,
@@ -56,12 +56,12 @@ pub struct Inode {
     pub private : [u8; 34]  ,
 }
 
-impl Default for Inode {
+impl Default for KeInode {
     fn default() -> Self {
         Self {
-            id      : InodeId(0, 0)     ,
+            id      : KeInodeId(0, 0)     ,
             kind    : Kind::Unknown     ,
-            flags   : Flags::from_raw(0),
+            flags   : KeInodeFlags::from_raw(0),
             size    : 0                 ,
             uid     : 0                 ,
             gid     : 0                 ,
@@ -74,12 +74,12 @@ impl Default for Inode {
     }
 }
 
-impl Inode {
+impl KeInode {
     pub const fn new() -> Self {
         Self {
-            id      : InodeId(0, 0)     ,
+            id      : KeInodeId(0, 0)     ,
             kind    : Kind::Unknown     ,
-            flags   : Flags::from_raw(0),
+            flags   : KeInodeFlags::from_raw(0),
             size    : 0                 ,
             uid     : 0                 ,
             gid     : 0                 ,

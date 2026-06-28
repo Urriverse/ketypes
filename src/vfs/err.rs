@@ -1,6 +1,6 @@
 #[repr(usize)]
 #[derive(Debug)]
-pub enum Error {
+pub enum KeFsError {
     Unknown         = 0,
     NotAFile        = 1,
     OutOfBounds     = 2,

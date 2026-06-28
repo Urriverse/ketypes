@@ -5,15 +5,15 @@ use core::{
 };
 
 #[derive(Debug)]
-pub struct Nutex<T> {
+pub struct KeNutex<T> {
     lock: AtomicBool,
     data: UnsafeCell<T>,
 }
 
-unsafe impl<T: Send> Send for Nutex<T> {}
-unsafe impl<T: Send> Sync for Nutex<T> {}
+unsafe impl<T: Send> Send for KeNutex<T> {}
+unsafe impl<T: Send> Sync for KeNutex<T> {}
 
-impl<T> Nutex<T> {
+impl<T> KeNutex<T> {
     pub const fn new(t: T) -> Self {
         Self {
             lock: AtomicBool::new(false),
@@ -27,7 +27,7 @@ impl<T> Nutex<T> {
         }
     }
 
-    pub fn lock(&self) -> NutexGuard<'_, T> {
+    pub fn lock(&self) -> KeNutexGuard<'_, T> {
         // Save the current interrupt state before we disable interrupts.
         let rflags: u64;
         unsafe {
@@ -49,14 +49,14 @@ impl<T> Nutex<T> {
             core::hint::spin_loop();
         }
 
-        NutexGuard {
+        KeNutexGuard {
             mutex: self,
             saved_if: (rflags & (1 << 9)) != 0,  // Bit 9 is the IF flag in RFLAGS.
         }
     }
 
     #[allow(dead_code)]
-    pub fn try_lock(&self) -> Option<NutexGuard<'_, T>> {
+    pub fn try_lock(&self) -> Option<KeNutexGuard<'_, T>> {
         // Save the current interrupt state and disable interrupts.
         let rflags: u64;
         unsafe {
@@ -75,7 +75,7 @@ impl<T> Nutex<T> {
             .compare_exchange(false, true, Ordering::Acquire, Ordering::Relaxed)
             .is_ok()
         {
-            Some(NutexGuard {
+            Some(KeNutexGuard {
                 mutex: self,
                 saved_if: (rflags & (1 << 9)) != 0,
             })
@@ -90,12 +90,12 @@ impl<T> Nutex<T> {
     }
 }
 
-pub struct NutexGuard<'a, T> {
-    mutex: &'a Nutex<T>,
+pub struct KeNutexGuard<'a, T> {
+    mutex: &'a KeNutex<T>,
     saved_if: bool,  // Whether interrupts were enabled before locking.
 }
 
-impl<T> core::ops::Deref for NutexGuard<'_, T> {
+impl<T> core::ops::Deref for KeNutexGuard<'_, T> {
     type Target = T;
 
     fn deref(&self) -> &T {
@@ -103,13 +103,13 @@ impl<T> core::ops::Deref for NutexGuard<'_, T> {
     }
 }
 
-impl<T> core::ops::DerefMut for NutexGuard<'_, T> {
+impl<T> core::ops::DerefMut for KeNutexGuard<'_, T> {
     fn deref_mut(&mut self) -> &mut T {
         unsafe { &mut *self.mutex.data.get() }
     }
 }
 
-impl<T> Drop for NutexGuard<'_, T> {
+impl<T> Drop for KeNutexGuard<'_, T> {
     fn drop(&mut self) {
         // Release the lock.
         self.mutex.lock.store(false, Ordering::Release);

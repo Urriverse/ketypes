@@ -1,6 +1,6 @@
 #[derive(Clone, Copy)]
 #[repr(u8)]
-pub enum AttLvl {
+pub enum KeAttLvl {
     /// Unrecoverable error – system will panic or halt.
     Panic = 0,
     /// Recoverable error.
@@ -15,8 +15,8 @@ pub enum AttLvl {
     Trace = 5,
 }
 
-impl AttLvl {
-    pub fn as_str(self) -> &'static str {
+impl KeAttLvl {
+    pub fn as_str(self) -> crate::KeStr {
         match self {
             Self::Panic => "PANIC",
             Self::Error => "ERROR",
@@ -27,7 +27,7 @@ impl AttLvl {
         }
     }
 
-    pub fn pretty(self) -> &'static str {
+    pub fn pretty(self) -> crate::KeStr {
         match self {
             Self::Panic => "\x1b[35;1mPANIC\x1b[0m",
             Self::Error => "\x1b[31;1mERROR\x1b[0m",

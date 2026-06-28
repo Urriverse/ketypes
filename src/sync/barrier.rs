@@ -1,11 +1,11 @@
 use core::sync::atomic::{AtomicBool, Ordering};
 use core::hint;
 
-pub struct Barrier {
+pub struct KeBarrier {
     open: AtomicBool,
 }
 
-impl Barrier {
+impl KeBarrier {
     pub const fn new() -> Self {
         Self {
             open: AtomicBool::new(false),

@@ -3,11 +3,11 @@ use core::{
     arch::asm
 };
 
-pub struct Nitex<T> {
+pub struct KeNitex<T> {
     data: UnsafeCell<T>,
 }
 
-impl<T: Clone> Clone for Nitex<T> {
+impl<T: Clone> Clone for KeNitex<T> {
     fn clone(&self) -> Self {
         Self::new((unsafe { &*self.data.get() }).clone())
     }
@@ -15,10 +15,10 @@ impl<T: Clone> Clone for Nitex<T> {
 
 // Safety: Nitex is Send and Sync if T is Send, but only if the caller ensures
 // that the lock is only used on a single CPU.
-unsafe impl<T: Send> Send for Nitex<T> {}
-unsafe impl<T: Send> Sync for Nitex<T> {}
+unsafe impl<T: Send> Send for KeNitex<T> {}
+unsafe impl<T: Send> Sync for KeNitex<T> {}
 
-impl<T> Nitex<T> {
+impl<T> KeNitex<T> {
     pub const fn new(t: T) -> Self {
         Self { data: UnsafeCell::new(t) }
     }
@@ -29,7 +29,7 @@ impl<T> Nitex<T> {
         }
     }
 
-    pub fn lock(&self) -> NitexGuard<'_, T> {
+    pub fn lock(&self) -> KeNitexGuard<'_, T> {
         let rflags: u64;
         unsafe {
             asm!(
@@ -41,16 +41,16 @@ impl<T> Nitex<T> {
             asm!("cli", options(nomem, nostack, preserves_flags));
         }
 
-        NitexGuard { mutex: self, saved_if: (rflags & (1 << 9)) != 0 }
+        KeNitexGuard { mutex: self, saved_if: (rflags & (1 << 9)) != 0 }
     }
 }
 
-pub struct NitexGuard<'a, T> {
-    mutex: &'a Nitex<T>,
+pub struct KeNitexGuard<'a, T> {
+    mutex: &'a KeNitex<T>,
     saved_if: bool,
 }
 
-impl<T> core::ops::Deref for NitexGuard<'_, T> {
+impl<T> core::ops::Deref for KeNitexGuard<'_, T> {
     type Target = T;
 
     fn deref(&self) -> &T {
@@ -58,13 +58,13 @@ impl<T> core::ops::Deref for NitexGuard<'_, T> {
     }
 }
 
-impl<T> core::ops::DerefMut for NitexGuard<'_, T> {
+impl<T> core::ops::DerefMut for KeNitexGuard<'_, T> {
     fn deref_mut(&mut self) -> &mut T {
         unsafe { &mut *self.mutex.data.get() }
     }
 }
 
-impl<T> Drop for NitexGuard<'_, T> {
+impl<T> Drop for KeNitexGuard<'_, T> {
     fn drop(&mut self) {
         unsafe {
             if self.saved_if {
