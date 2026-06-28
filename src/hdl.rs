@@ -14,6 +14,12 @@ struct HdlMeta {
 
 pub struct Hdl<const _T: usize> ( *const () /* points to HdlMeta.data */ );
 
+impl<const _T: usize> core::fmt::Debug for Hdl<_T> {
+    fn fmt(&self, f: &mut core::fmt::Formatter<'_>) -> core::fmt::Result {
+        f.write_fmt(format_args!("Hdl![{:p}{}]", self.0, if self.meta().drop as usize != 0 { " + Drop" } else { "" }))
+    }
+}
+
 impl<const _T: usize> Clone for Hdl<_T> {
     #[inline(always)]
     fn clone(&self) -> Self {
