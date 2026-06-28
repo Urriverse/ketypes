@@ -1,4 +1,6 @@
-pub type KeWaitQueue = usize;
+use crate::{KeAbstract, KeNutex};
+
+pub type KeWaitQueue = KeNutex<KeAbstract<8>>;
 
 pub type KeTaskId = u64;
 
