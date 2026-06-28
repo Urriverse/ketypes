@@ -1,4 +1,4 @@
-pub type Device = crate::Hdl![Device];
+pub type KeDevice = crate::Hdl![Device];
 
 pub type KeMethodId = u64;
 
@@ -22,13 +22,4 @@ extrum::extrum! {
 pub struct KeDeviceResult {
     pub value: usize,
     pub status: KeDeviceStatus,
-}
-
-#[repr(C, align(8))]
-pub struct KeDevice {
-    pub id: KeDeviceId,
-    pub name: alloc::string::String,
-    pub parent: Option<KeDeviceId>,
-    driver_data: usize,
-    methods: alloc::collections::btree_map::BTreeMap<KeMethodId, KeDeviceMethod>,
 }

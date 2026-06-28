@@ -2,7 +2,7 @@ use crate::*;
 
 Ke!
 {
-    KeVtDeviceNew           @   fn  (KeStr) -> Device
+    KeVtDeviceNew           @   fn  (KeStr) -> KeDevice
 
     KeDeviceAddMethod       @   fn  (&mut KeDevice, method_id: KeMethodId, method: KeDeviceMethod)
 
