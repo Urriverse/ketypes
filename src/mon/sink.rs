@@ -4,5 +4,5 @@ pub enum Format {
 }
 
 pub trait Sink: core::fmt::Write + Sync {
-    fn format() -> Format;
+    fn format(&self) -> Format;
 }
