@@ -3,6 +3,6 @@ pub enum Format {
     Regular,
 }
 
-pub trait Sink: core::fmt::Write + Sync {
+pub trait Sink: core::fmt::Write + Sync + Send {
     fn format(&self) -> Format;
 }
