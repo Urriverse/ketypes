@@ -1,14 +1,11 @@
-pub fn add(left: u64, right: u64) -> u64 {
-    left + right
-}
+#![no_std]
+#![feature(const_trait_impl)]
 
-#[cfg(test)]
-mod tests {
-    use super::*;
+extern crate alloc;
 
-    #[test]
-    fn it_works() {
-        let result = add(2, 2);
-        assert_eq!(result, 4);
-    }
-}
+pub mod sync;
+pub mod mon;
+pub mod vfs;
+pub mod ebus;
+pub mod kdm;
+pub mod paging;

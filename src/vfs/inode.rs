@@ -1,0 +1,93 @@
+extrum::extrum! {
+    #[derive(Clone, Copy, PartialEq)]
+    pub enum Flags: u64 {
+        DIR         = 1 << 0    ,
+        USER_READ   = 1 << 1    ,
+        USER_WRITE  = 1 << 2    ,
+        USER_EXEC   = 1 << 3    ,
+        GROUP_READ  = 1 << 4    ,
+        GROUP_WRITE = 1 << 5    ,
+        GROUP_EXEC  = 1 << 6    ,
+        OTHER_READ  = 1 << 7    ,
+        OTHER_WRITE = 1 << 8    ,
+        OTHER_EXEC  = 1 << 9    ,
+        LEVEL_READ  = 1 << 10   ,
+        LEVEL_WRITE = 1 << 11   ,
+        LEVEL_EXEC  = 1 << 12   ,
+    }
+}
+
+impl Flags {
+    pub fn level(self) -> u16 { (self.0 >> 48) as u16 }
+    pub fn set_level(&mut self, level: u16) {
+        self.0 &= !0 << 16 >> 16;
+        self.0 |= (level as u64) << 48;
+    }
+}
+
+#[repr(C, align(8))]
+#[derive(Debug, Clone, Copy, PartialEq, Eq, PartialOrd, Ord, Hash)]
+pub struct InodeId(pub u32, pub u32); // (inode number, metablock id)
+
+#[repr(u16)]
+#[derive(Debug, Clone, Copy, PartialEq, Eq)]
+pub enum Kind {
+    Unknown     = 0,
+    File        = 1,
+    Directory   = 2,
+    Socket      = 3,
+    Virtual     = 4,
+    SymLink     = 5,
+}
+
+#[repr(C, align(128))]
+#[derive(Debug, Clone, Copy, PartialEq, Eq)]
+pub struct Inode {
+    pub id      : InodeId   ,
+    pub kind    : Kind      ,
+    pub flags   : Flags     ,
+    pub size    : u64       ,
+    pub uid     : u16       ,
+    pub gid     : u16       ,
+    pub atime   : u64       ,
+    pub mtime   : u64       ,
+    pub ctime   : u64       ,
+    pub nlink   : u32       ,
+    pub private : [u8; 34]  ,
+}
+
+impl Default for Inode {
+    fn default() -> Self {
+        Self {
+            id      : InodeId(0, 0)     ,
+            kind    : Kind::Unknown     ,
+            flags   : Flags::from_raw(0),
+            size    : 0                 ,
+            uid     : 0                 ,
+            gid     : 0                 ,
+            atime   : 0                 ,
+            mtime   : 0                 ,
+            ctime   : 0                 ,
+            nlink   : 0                 ,
+            private : [0u8; 34]         ,
+        }
+    }
+}
+
+impl Inode {
+    pub const fn new() -> Self {
+        Self {
+            id      : InodeId(0, 0)     ,
+            kind    : Kind::Unknown     ,
+            flags   : Flags::from_raw(0),
+            size    : 0                 ,
+            uid     : 0                 ,
+            gid     : 0                 ,
+            atime   : 0                 ,
+            mtime   : 0                 ,
+            ctime   : 0                 ,
+            nlink   : 0                 ,
+            private : [0u8; 34]         ,
+        }
+    }
+}
