@@ -31,4 +31,6 @@ Ke!
     KeFsMetaBlockRegister   @   fn  (fs: Arc<dyn KeFileSystem>) -> KeMetaBlockId
 
     KeFsMount               @   fn  (name: String, mb: KeMetaBlockId) -> Option<KeInodeId>
+
+    KeFsCurrentRoot         @   fn  () -> String
 }
