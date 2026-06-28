@@ -1,4 +1,4 @@
-macro _ke($($(->)? $x:ident $(,)?)+){$(pub mod$x;pub use$x::*;)+}
+macro _ke($($(->)? $x:ident $(,)?)+){$(mod$x;pub use$x::*;)+}
 
 _ke!
 {

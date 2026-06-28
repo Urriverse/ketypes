@@ -1,4 +1,6 @@
 #![no_std]
+#![allow(incomplete_features)]  // for generic_const_exprs
+#![feature(generic_const_exprs)]
 #![feature(const_trait_impl)]
 #![feature(decl_macro)]
 

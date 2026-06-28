@@ -6,3 +6,4 @@ edition = "2024"
 [dependencies]
 bitflags = "2.13.0"
 extrum = { version = "0.1.3", features = ["no_std"] }
+paste = "1.0.15"
