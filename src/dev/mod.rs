@@ -1,3 +1,5 @@
+pub type Device = crate::Hdl![Device];
+
 pub type KeMethodId = u64;
 
 pub type KeDeviceId = u32;

@@ -140,3 +140,5 @@ impl<const _T: usize> Hdl<_T> {
 }
 
 pub macro Hdl($($x:tt)+) { Hdl<{ crate::hash!(stringify!($($x)+).as_bytes()) as usize }> }
+
+// #[macro_export] macro_rules! Hdl { ($($x:tt)+) => { Hdl<{ crate::hash!(stringify!($($x)+).as_bytes()) as usize }> } }
