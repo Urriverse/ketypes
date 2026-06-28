@@ -23,7 +23,6 @@ impl<T> Nitex<T> {
         Self { data: UnsafeCell::new(t) }
     }
 
-    #[allow(clippy::mut_from_ref)]
     pub unsafe fn inner(&self) -> &mut T {
         unsafe {
             self.data.get().as_mut_unchecked()

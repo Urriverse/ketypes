@@ -21,6 +21,12 @@ impl<T> Nutex<T> {
         }
     }
 
+    pub unsafe fn inner(&self) -> &mut T {
+        unsafe {
+            self.data.get().as_mut_unchecked()
+        }
+    }
+
     pub fn lock(&self) -> NutexGuard<'_, T> {
         // Save the current interrupt state before we disable interrupts.
         let rflags: u64;

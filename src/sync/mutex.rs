@@ -20,6 +20,12 @@ impl<T> Mutex<T> {
         }
     }
 
+    pub unsafe fn inner(&self) -> &mut T {
+        unsafe {
+            self.data.get().as_mut_unchecked()
+        }
+    }
+
     pub fn lock(&self) -> MutexGuard<'_, T> {
         while self
             .lock

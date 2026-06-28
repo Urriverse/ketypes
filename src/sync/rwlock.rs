@@ -18,6 +18,12 @@ impl<T> RwLock<T> {
         }
     }
 
+    pub unsafe fn inner(&self) -> &mut T {
+        unsafe {
+            self.data.get().as_mut_unchecked()
+        }
+    }
+
     pub fn read(&self) -> RwLockReadGuard<'_, T> {
         loop {
             let old = self.state.load(Ordering::Acquire);
