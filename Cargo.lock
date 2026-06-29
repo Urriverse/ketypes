@@ -25,5 +25,6 @@ dependencies = [
 
 [[package]]
 name = "nopaque"
-version = "0.1.0"
-source = "git+https://github.com/vi-is-ramen/nopaque.git?branch=main#d1d0e2d391ac9042af35363a60f4798fc507d92c"
+version = "0.2.0"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "e2d61b0b835fbea0ee7c6d3c20169d288f3e4f033f1f3f2c8463987fdb10e802"
