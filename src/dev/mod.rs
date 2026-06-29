@@ -1,4 +1,4 @@
-pub type KeDevice = Arc![Device];
+pub type KeDevice = Box![Device];
 
 pub type KeMethodId = u64;
 
