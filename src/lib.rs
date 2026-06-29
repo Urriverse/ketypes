@@ -5,6 +5,7 @@
 #![feature(decl_macro)]
 
 extern crate alloc;
+#[macro_use] extern crate nopaque;
 
 pub mod sync;
 pub mod mon;
@@ -17,7 +18,6 @@ pub mod km;
 pub mod util;
 pub mod sched;
 pub mod dev;
-pub mod hdl;
 
 pub use km::*;
 pub use mon::*;
@@ -30,4 +30,3 @@ pub use abi::*;
 pub use util::*;
 pub use sched::*;
 pub use dev::*;
-pub use hdl::*;

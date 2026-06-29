@@ -1,4 +1,4 @@
-pub type KeDevice = crate::Hdl![Device];
+pub type KeDevice = Arc![Device];
 
 pub type KeMethodId = u64;
 
