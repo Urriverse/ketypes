@@ -5,7 +5,7 @@
 #![feature(decl_macro)]
 
 extern crate alloc;
-#[macro_use] extern crate nopaque;
+#[macro_use] extern crate apaque;
 
 pub mod sync;
 pub mod mon;
