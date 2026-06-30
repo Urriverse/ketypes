@@ -124,7 +124,7 @@ macro_rules! Import {
             #[allow(non_snake_case)]
             #[inline(always)]
             $vis fn [< $n >]( $( $name : $aty ),* ) $( -> $rty )? {
-                (unsafe{core::ptr::read_unaligned([< _ $n >].0 as *const fn ( $( $name : $aty ),* ) $( -> $rty )?)})
+                (*unsafe{([< _ $n >].0 as *const fn ( $( $name : $aty ),* ) $( -> $rty )?).as_ref_unchecked()})
                 ( $( $name ),* )
             }
         );
@@ -143,7 +143,7 @@ macro_rules! Import {
             #[allow(non_snake_case)]
             #[inline(always)]
             $vis fn [< $n >]( $( $name : $aty ),* ) $( -> $rty )? {
-                (unsafe{core::ptr::read_unaligned([< _ $n >].0 as *const fn ( $( $name : $aty ),* ) $( -> $rty )?)})
+                (*unsafe{([< _ $n >].0 as *const fn ( $( $name : $aty ),* ) $( -> $rty )?).as_ref_unchecked()})
                 ( $( $name ),* )
             }
         );
