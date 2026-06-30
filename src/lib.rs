@@ -15,7 +15,6 @@ pub mod vfs;
 pub mod ebus;
 pub mod kdm;
 pub mod paging;
-pub mod abi;
 pub mod km;
 pub mod util;
 pub mod sched;
@@ -28,7 +27,6 @@ pub use vfs::*;
 pub use ebus::*;
 pub use kdm::*;
 pub use paging::*;
-pub use abi::*;
 pub use util::*;
 pub use sched::*;
 pub use dev::*;
@@ -197,7 +195,7 @@ macro_rules! Export {
         paste!(
             #[allow(non_snake_case)]
             fn [< __stub_ $n >]( $( $name : $aty ),* ) $( -> $rty )? { $b }
-            
+
             #[used]
             #[allow(non_upper_case_globals)]
             #[unsafe(export_name = concat!("Me", stringify!($n)))] $(#[$attr])*
