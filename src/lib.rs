@@ -92,7 +92,7 @@ macro_rules! Import {
             #[allow(non_upper_case_globals)]
             #[unsafe(export_name = concat!("Ki", stringify!($n)))]
             static [< _ $n >]: Import = Import([< __stub_ $n >] as *const (), parse_version(stringify!($x)));
-            #[allow(non_snake_case)]
+            #[allow(non_snake_case)] #[inline(always)]
             $vis fn [< $n >]( $( $name : $aty ),* ) $( -> $rty )? { (unsafe{([< _ $n >].0 as *const fn ( $( $name : $aty ),* ) $( -> $rty )?).as_ref_unchecked()})( $( $name ),* )}
         );
     };
@@ -104,7 +104,7 @@ macro_rules! Import {
             #[allow(non_upper_case_globals)]
             #[unsafe(export_name = concat!("Mi", stringify!($n)))]
             $vis static [< _ $n >]: Import = Import([< __stub_ $n >] as *const (), parse_version(stringify!($x)));
-            #[allow(non_snake_case)]
+            #[allow(non_snake_case)] #[inline(always)]
             $vis fn [< $n >]( $( $name : $aty ),* ) $( -> $rty )? { (unsafe{([< _ $n >].0 as *const fn ( $( $name : $aty ),* ) $( -> $rty )?).as_ref_unchecked()})( $( $name ),* )}
         );
     };
