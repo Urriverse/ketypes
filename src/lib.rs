@@ -56,6 +56,7 @@ macro_rules! Import {
         paste!(
         #[used]
         #[allow(non_upper_case_globals)]
+            #[unsafe(export_name = concat!("_Ki", stringify!($n)))]
         static [< Ki $n >]: $crate::Import = $crate::Import($i as *const (), parse_version(stringify!($x)));
         );
     };
@@ -63,6 +64,7 @@ macro_rules! Import {
         paste!(
         #[used]
         #[allow(non_upper_case_globals)]
+            #[unsafe(export_name = concat!("_Ki", stringify!($n)))]
         static [< Ki $n >]: $crate::Import = $crate::Import($n as *const (), parse_version(stringify!($x)));
         );
     };
@@ -70,6 +72,7 @@ macro_rules! Import {
         paste!(
         #[used]
         #[allow(non_upper_case_globals)]
+            #[unsafe(export_name = concat!("_Mi", stringify!($n)))]
         static [< Mi $n >]: $crate::Import = $crate::Import($i as *const (), parse_version(stringify!($x)));
         );
     };
@@ -77,6 +80,7 @@ macro_rules! Import {
         paste!(
         #[used]
         #[allow(non_upper_case_globals)]
+            #[unsafe(export_name = concat!("_Mi", stringify!($n)))]
         static [< Mi $n >]: $crate::Import = $crate::Import($n as *const (), parse_version(stringify!($x)));
         );
     };
@@ -87,7 +91,9 @@ macro_rules! Import {
             #[used]
             #[allow(non_upper_case_globals)]
             #[unsafe(export_name = concat!("Ki", stringify!($n)))]
-            $vis static $n: Import = Import([< __stub_ $n >] as *const (), parse_version(stringify!($x)));
+            static [< _ $n >]: Import = Import([< __stub_ $n >] as *const (), parse_version(stringify!($x)));
+            #[allow(non_snake_case)]
+            $vis fn [< $n >]( $( $name : $aty ),* ) $( -> $rty )? { (unsafe{([< _ $n >].0 as *const fn ( $( $name : $aty ),* ) $( -> $rty )?).as_ref_unchecked()})( $( $name ),* )}
         );
     };
     ( $vis:vis fn $n:ident ( $($name:ident : $aty:ty),* ) $( -> $rty:ty )? where $x:literal $b:block ) => {
@@ -97,7 +103,9 @@ macro_rules! Import {
             #[used]
             #[allow(non_upper_case_globals)]
             #[unsafe(export_name = concat!("Mi", stringify!($n)))]
-            $vis static $n: Import = Import([< __stub_ $n >] as *const (), parse_version(stringify!($x)));
+            $vis static [< _ $n >]: Import = Import([< __stub_ $n >] as *const (), parse_version(stringify!($x)));
+            #[allow(non_snake_case)]
+            $vis fn [< $n >]( $( $name : $aty ),* ) $( -> $rty )? { (unsafe{([< _ $n >].0 as *const fn ( $( $name : $aty ),* ) $( -> $rty )?).as_ref_unchecked()})( $( $name ),* )}
         );
     };
 }
@@ -171,8 +179,8 @@ macro_rules! Export {
 // // export from kernel, name matches function to export
 // Export![TestMe2, since kernel 0.2];
 
-// // import from other module
+// // // import from other module
 // Import! { pub fn Check(_xyz: &str) -> Option<usize> where 0.1 { None } }
 
-// // import from kernel
+// // // import from kernel
 // Export! { pub fn CheckMe2(_xyz: &str) -> Option<usize> where kernel 0.1 { None } }
