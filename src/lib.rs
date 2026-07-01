@@ -155,31 +155,31 @@ macro_rules! Import {
 
 #[macro_export]
 macro_rules! Export {
-    ($i:tt => $n:ident, since kernel $x:literal) => {
+    ($($i:tt)::+ => $n:ident, since kernel $x:literal) => {
         paste!(
         #[used]
         #[allow(non_upper_case_globals)]
         #[linkme::distributed_slice(crate::KMI_TABLE)]
-        static [< Ke $n >]: $crate::Kexport = $crate::Kexport($i as *const (), parse_version(stringify!($x)), stringify!($n));
+        static [< Ke $n >]: $crate::Kexport = $crate::Kexport($($i)::+ as *const (), parse_version(stringify!($x)), stringify!($n));
         );
     };
-    ($n:tt, since kernel $x:literal) => {
+    ($($i:tt)::+, since kernel $x:literal) => {
         paste!(
         #[used]
         #[allow(non_upper_case_globals)]
         #[linkme::distributed_slice(crate::KMI_TABLE)]
-        static [< Ke $n >]: $crate::Kexport = $crate::Kexport($n as *const (), parse_version(stringify!($x)), stringify!($n));
+        static [< Ke $n >]: $crate::Kexport = $crate::Kexport($($i)::+ as *const (), parse_version(stringify!($x)), stringify!($($i)::+));
         );
     };
-    ($i:tt => $n:ident, since $x:literal) => {
+    ($($i:tt)::+ => $n:ident, since $x:literal) => {
         paste!(
         #[used]
         #[allow(non_upper_case_globals)]
         #[linkme::distributed_slice(crate::KMI_TABLE)]
-        static [< Me $n >]: $crate::Export = $crate::Export($i as *const (), parse_version(stringify!($x)));
+        static [< Me $n >]: $crate::Export = $crate::Export($($i)::+ as *const (), parse_version(stringify!($x)));
         );
     };
-    ($n:tt, since $x:literal) => {
+    ($($i:tt)::+, since $x:literal) => {
         paste!(
         #[used]
         #[allow(non_upper_case_globals)]
