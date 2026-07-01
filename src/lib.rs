@@ -123,7 +123,7 @@ macro_rules! Import {
             #[used]
             #[allow(non_upper_case_globals)]
             #[unsafe(export_name = concat!("Ki", stringify!($n)))]
-            static [< _ $n >]: Import = Import([< __stub_ $n >] as *const (), $crate::parse_version(stringify!($x)));
+            static [< _ $n >]: $crate::Import = $crate::Import([< __stub_ $n >] as *const (), $crate::parse_version(stringify!($x)));
 
             $(#[$attr])*
             #[allow(non_snake_case)]
@@ -141,7 +141,7 @@ macro_rules! Import {
             #[used]
             #[allow(non_upper_case_globals)]
             #[unsafe(export_name = concat!("Mi", stringify!($n)))]
-            static [< _ $n >]: Import = Import([< __stub_ $n >] as *const (), $crate::parse_version(stringify!($x)));
+            static [< _ $n >]: $crate::Import = $crate::Import([< __stub_ $n >] as *const (), $crate::parse_version(stringify!($x)));
 
             $(#[$attr])*
             #[allow(non_snake_case)]
@@ -196,7 +196,7 @@ macro_rules! Export {
             #[allow(non_upper_case_globals)]
             #[unsafe(export_name = concat!("Ke", stringify!($n)))] $(#[$attr])*
             #[linkme::distributed_slice(crate::KMI_TABLE)]
-            $vis static $n: Kexport = Kexport([< __stub_ $n >] as *const (), $crate::parse_version(stringify!($x)), stringify!($n));
+            $vis static $n: $crate::Kexport = $crate::Kexport([< __stub_ $n >] as *const (), $crate::parse_version(stringify!($x)), stringify!($n));
         );
     };
     ( $(#[$attr:meta])* $vis:vis fn $n:ident ( $($name:ident : $aty:ty),* ) $( -> $rty:ty )? where $x:literal $b:block ) => {
@@ -208,7 +208,7 @@ macro_rules! Export {
             #[allow(non_upper_case_globals)]
             #[unsafe(export_name = concat!("Me", stringify!($n)))] $(#[$attr])*
             #[linkme::distributed_slice(crate::KMI_TABLE)]
-            $vis static $n: Export = Export([< __stub_ $n >] as *const (), $crate::parse_version(stringify!($x)));
+            $vis static $n: $crate::Export = $crate::Export([< __stub_ $n >] as *const (), $crate::parse_version(stringify!($x)));
         );
     };
 }
