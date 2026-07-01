@@ -187,6 +187,30 @@ macro_rules! Export {
         static [< Me $n >]: $crate::Export = $crate::Export($n as *const (), $crate::parse_version(stringify!($x)));
         );
     };
+    ( $(#[$attr:meta])* $vis:vis fn $x:ident as $n:ident ( $($name:ident : $aty:ty),* ) $( -> $rty:ty )? where kernel $v:literal $b:block ) => {
+        paste!(
+            #[allow(non_snake_case)]
+            fn $x( $( $name : $aty ),* ) $( -> $rty )? { $b }
+
+            #[used]
+            #[allow(non_upper_case_globals)]
+            #[unsafe(export_name = concat!("Ke", stringify!($n)))] $(#[$attr])*
+            #[linkme::distributed_slice(crate::KMI_TABLE)]
+            $vis static $n: $crate::Kexport = $crate::Kexport($x as *const (), $crate::parse_version(stringify!($v)), stringify!($n));
+        );
+    };
+    ( $(#[$attr:meta])* $vis:vis fn $x:ident as $n:ident ( $($name:ident : $aty:ty),* ) $( -> $rty:ty )? where $v:literal $b:block ) => {
+        paste!(
+            #[allow(non_snake_case)]
+            fn $x( $( $name : $aty ),* ) $( -> $rty )? { $b }
+
+            #[used]
+            #[allow(non_upper_case_globals)]
+            #[unsafe(export_name = concat!("Me", stringify!($n)))] $(#[$attr])*
+            #[linkme::distributed_slice(crate::KMI_TABLE)]
+            $vis static $n: $crate::Export = $crate::Export($x as *const (), $crate::parse_version(stringify!($v)));
+        );
+    };
     ( $(#[$attr:meta])* $vis:vis fn $n:ident ( $($name:ident : $aty:ty),* ) $( -> $rty:ty )? where kernel $x:literal $b:block ) => {
         paste!(
             #[allow(non_snake_case)]
