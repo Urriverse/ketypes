@@ -155,7 +155,7 @@ macro_rules! Import {
 
 #[macro_export]
 macro_rules! Export {
-    ($i:ident => $n:ident, since kernel $x:literal) => {
+    ($i:tt => $n:ident, since kernel $x:literal) => {
         paste!(
         #[used]
         #[allow(non_upper_case_globals)]
@@ -163,7 +163,7 @@ macro_rules! Export {
         static [< Ke $n >]: $crate::Kexport = $crate::Kexport($i as *const (), parse_version(stringify!($x)), stringify!($n));
         );
     };
-    ($n:ident, since kernel $x:literal) => {
+    ($n:tt, since kernel $x:literal) => {
         paste!(
         #[used]
         #[allow(non_upper_case_globals)]
@@ -171,7 +171,7 @@ macro_rules! Export {
         static [< Ke $n >]: $crate::Kexport = $crate::Kexport($n as *const (), parse_version(stringify!($x)), stringify!($n));
         );
     };
-    ($i:ident => $n:ident, since $x:literal) => {
+    ($i:tt => $n:ident, since $x:literal) => {
         paste!(
         #[used]
         #[allow(non_upper_case_globals)]
@@ -179,7 +179,7 @@ macro_rules! Export {
         static [< Me $n >]: $crate::Export = $crate::Export($i as *const (), parse_version(stringify!($x)));
         );
     };
-    ($n:ident, since $x:literal) => {
+    ($n:tt, since $x:literal) => {
         paste!(
         #[used]
         #[allow(non_upper_case_globals)]
