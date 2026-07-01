@@ -115,6 +115,21 @@ macro_rules! Import {
             static [< Mi $n >]: $crate::Import = $crate::Import($n as *const (), $crate::parse_version(stringify!($x)));
         );
     };
+    ( $(#[$attr:meta])* $vis:vis fn $n:ident ( $($name:ident : $aty:ty),* ) $( -> $rty:ty )? where kernel $x:literal ) => {
+        paste!(
+            #[used]
+            #[allow(non_upper_case_globals)]
+            #[unsafe(export_name = concat!("Ki", stringify!($n)))]
+            static [< _ $n >]: $crate::Import = $crate::Import(0 as *const (), $crate::parse_version(stringify!($x)));
+
+            $(#[$attr])*
+            #[allow(non_snake_case)]
+            #[inline(always)]
+            $vis fn [< $n >]( $( $name : $aty ),* ) $( -> $rty )? {
+                (unsafe{core::mem::transmute::<_, fn ( $( $name : $aty ),* ) $( -> $rty )?>([< _ $n >].0 )})( $( $name ),* )
+            }
+        );
+    };
     ( $(#[$attr:meta])* $vis:vis fn $n:ident ( $($name:ident : $aty:ty),* ) $( -> $rty:ty )? where kernel $x:literal $b:block ) => {
         paste!(
             #[allow(non_snake_case)]
