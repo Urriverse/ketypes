@@ -124,7 +124,7 @@ macro_rules! Import {
             #[allow(non_snake_case)]
             #[inline(always)]
             $vis fn [< $n >]( $( $name : $aty ),* ) $( -> $rty )? {
-                (unsafe{core::mem::transmute::<_, fn ( $( $name : $aty ),* ) $( -> $rty )?>([< _ $n >].0 )})( $( $name ),* );
+                (unsafe{core::mem::transmute::<_, fn ( $( $name : $aty ),* ) $( -> $rty )?>([< _ $n >].0 )})( $( $name ),* )
             }
         );
     };
@@ -142,7 +142,7 @@ macro_rules! Import {
             #[allow(non_snake_case)]
             #[inline(always)]
             $vis fn [< $n >]( $( $name : $aty ),* ) $( -> $rty )? {
-                (unsafe{core::mem::transmute::<_, fn ( $( $name : $aty ),* ) $( -> $rty )?>([< _ $n >].0 )})( $( $name ),* );
+                (unsafe{core::mem::transmute::<_, fn ( $( $name : $aty ),* ) $( -> $rty )?>([< _ $n >].0 )})( $( $name ),* )
             }
         );
     };
