@@ -43,6 +43,9 @@ unsafe impl core::marker::Sync for Export {}
 unsafe impl core::marker::Send for Import {}
 unsafe impl core::marker::Sync for Import {}
 
+unsafe impl core::marker::Send for Kexport {}
+unsafe impl core::marker::Sync for Kexport {}
+
 pub const fn parse_version(s: &str) -> u64 {
     let bytes = s.as_bytes();
     let len = bytes.len();
