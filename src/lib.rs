@@ -31,9 +31,9 @@ pub use util::*;
 pub use sched::*;
 pub use dev::*;
 
-#[repr(C)] pub struct Export(pub *const (), pub usize);
+#[repr(C)] pub struct Export(pub *const (), pub u64);
 
-#[repr(C)] pub struct Import(pub *const (), pub usize);
+#[repr(C)] pub struct Import(pub *const (), pub u64);
 
 unsafe impl core::marker::Send for Export {}
 unsafe impl core::marker::Sync for Export {}
