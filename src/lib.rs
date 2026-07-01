@@ -45,14 +45,14 @@ unsafe impl core::marker::Sync for Kexport {}
 impl ImExport {
     #[inline(always)] pub fn address(&self) -> usize { self.0 as usize }
     #[inline(always)] pub fn version(&self) -> (u32, u32) { ((self.1 >> 32) as u32, self.1 as u32) }
-    #[inline(always)] pub unsafe fn borrow<T>(&self) -> &mut T { unsafe { (self.0 as *mut T).as_mut_unchecked() } }
+    #[inline(always)] pub unsafe fn borrow<T>(&self) -> &'static mut T { unsafe { (self.0 as *mut T).as_mut_unchecked() } }
 }
 
 impl Kexport {
     #[inline(always)] pub fn address(&self) -> usize { self.0 as usize }
-    #[inline(always)] pub fn name(&self) -> &str { unsafe { self.2.as_ref_unchecked() } }
+    #[inline(always)] pub fn name(&self) -> &'static str { unsafe { self.2.as_ref_unchecked() } }
     #[inline(always)] pub fn version(&self) -> (u32, u32) { ((self.1 >> 32) as u32, self.1 as u32) }
-    #[inline(always)] pub unsafe fn borrow<T>(&self) -> &mut T { unsafe { (self.0 as *mut T).as_mut_unchecked() } }
+    #[inline(always)] pub unsafe fn borrow<T>(&self) -> &'static mut T { unsafe { (self.0 as *mut T).as_mut_unchecked() } }
 }
 
 pub const fn parse_version(s: &str) -> u64 {
