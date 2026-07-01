@@ -46,6 +46,12 @@ unsafe impl core::marker::Sync for Import {}
 unsafe impl core::marker::Send for Kexport {}
 unsafe impl core::marker::Sync for Kexport {}
 
+impl Kexport {
+    #[inline(always)] pub fn name(&self) -> &str { unsafe { self.2.as_ref_unchecked() } }
+    #[inline(always)] pub fn version(&self) -> (u32, u32) { ((self.1 >> 32) as u32, self.1 as u32) }
+    #[inline(always)] pub fn address<T>(&self) -> &mut T { unsafe { (self.0 as *mut T).as_mut_unchecked() } }
+}
+
 pub const fn parse_version(s: &str) -> u64 {
     let bytes = s.as_bytes();
     let len = bytes.len();
