@@ -91,8 +91,7 @@ pub const fn parse_version(s: &str) -> u64 {
 
 #[macro_export]
 macro_rules! Import {
-    // Capture optional `mut` as a token tree ($m:tt) so it can be safely repeated
-    ( $(#[$attr:meta])* $vis:vis fn $n:ident ( $( $( $m:tt )? $name:ident : $aty:ty ),* ) $( -> $rty:ty )? where kernel $x:literal ) => {
+    ( $(#[$attr:meta])* $vis:vis fn $n:ident ( $( $( mut )? $name:ident : $aty:ty ),* ) $( -> $rty:ty )? where kernel $x:literal ) => {
         $crate::paste!(
             #[used]
             #[allow(non_upper_case_globals)]
@@ -102,14 +101,12 @@ macro_rules! Import {
             $(#[$attr])*
             #[allow(non_snake_case)]
             #[inline(always)]
-            $vis fn [< $n >]( $( $( $m )? $name : $aty ),* ) $( -> $rty )? {
-                // Function pointer signatures cannot contain parameter names or `mut`.
-                // We strictly pass the types here.
+            $vis fn [< $n >]( $( $( mut )? $name : $aty ),* ) $( -> $rty )? {
                 (unsafe{core::mem::transmute::<_, fn ( $( $aty ),* ) $( -> $rty )?>([< _ $n >].0 )})( $( $name ),* )
             }
         );
     };
-    ( $(#[$attr:meta])* $vis:vis fn $n:ident ( $( $( $m:tt )? $name:ident : $aty:ty ),* ) $( -> $rty:ty )? where $x:literal ) => {
+    ( $(#[$attr:meta])* $vis:vis fn $n:ident ( $( $( mut )? $name:ident : $aty:ty ),* ) $( -> $rty:ty )? where $x:literal ) => {
         $crate::paste!(
             #[used]
             #[allow(non_upper_case_globals)]
@@ -119,15 +116,15 @@ macro_rules! Import {
             $(#[$attr])*
             #[allow(non_snake_case)]
             #[inline(always)]
-            $vis fn [< $n >]( $( $( $m )? $name : $aty ),* ) $( -> $rty )? {
+            $vis fn [< $n >]( $( $( mut )? $name : $aty ),* ) $( -> $rty )? {
                 (unsafe{core::mem::transmute::<_, fn ( $( $aty ),* ) $( -> $rty )?>([< _ $n >].0 )})( $( $name ),* )
             }
         );
     };
-    ( $(#[$attr:meta])* $vis:vis fn $n:ident ( $( $( $m:tt )? $name:ident : $aty:ty ),* ) $( -> $rty:ty )? where kernel $x:literal $b:block ) => {
+    ( $(#[$attr:meta])* $vis:vis fn $n:ident ( $( $( mut )? $name:ident : $aty:ty ),* ) $( -> $rty:ty )? where kernel $x:literal $b:block ) => {
         $crate::paste!(
             #[allow(non_snake_case)]
-            fn [< __stub_ $n >]( $( $( $m )? $name : $aty ),* ) $( -> $rty )? { $b }
+            fn [< __stub_ $n >]( $( $( mut )? $name : $aty ),* ) $( -> $rty )? { $b }
 
             #[used]
             #[allow(non_upper_case_globals)]
@@ -137,15 +134,15 @@ macro_rules! Import {
             $(#[$attr])*
             #[allow(non_snake_case)]
             #[inline(always)]
-            $vis fn [< $n >]( $( $( $m )? $name : $aty ),* ) $( -> $rty )? {
+            $vis fn [< $n >]( $( $( mut )? $name : $aty ),* ) $( -> $rty )? {
                 (unsafe{core::mem::transmute::<_, fn ( $( $aty ),* ) $( -> $rty )?>([< _ $n >].0 )})( $( $name ),* )
             }
         );
     };
-    ( $(#[$attr:meta])* $vis:vis fn $n:ident ( $( $( $m:tt )? $name:ident : $aty:ty ),* ) $( -> $rty:ty )? where $x:literal $b:block ) => {
+    ( $(#[$attr:meta])* $vis:vis fn $n:ident ( $( $( mut )? $name:ident : $aty:ty ),* ) $( -> $rty:ty )? where $x:literal $b:block ) => {
         $crate::paste!(
             #[allow(non_snake_case)]
-            fn [< __stub_ $n >]( $( $( $m )? $name : $aty ),* ) $( -> $rty )? { $b }
+            fn [< __stub_ $n >]( $( $( mut )? $name : $aty ),* ) $( -> $rty )? { $b }
 
             #[used]
             #[allow(non_upper_case_globals)]
@@ -155,12 +152,12 @@ macro_rules! Import {
             $(#[$attr])*
             #[allow(non_snake_case)]
             #[inline(always)]
-            $vis fn [< $n >]( $( $( $m )? $name : $aty ),* ) $( -> $rty )? {
+            $vis fn [< $n >]( $( $( mut )? $name : $aty ),* ) $( -> $rty )? {
                 (unsafe{core::mem::transmute::<_, fn ( $( $aty ),* ) $( -> $rty )?>([< _ $n >].0 )})( $( $name ),* )
             }
         );
     };
-    ( $(#[$attr:meta])* $vis:vis fn $o:ident as $n:ident ( $( $( $m:tt )? $name:ident : $aty:ty ),* ) $( -> $rty:ty )? where kernel $x:literal ) => {
+    ( $(#[$attr:meta])* $vis:vis fn $o:ident as $n:ident ( $( $( mut )? $name:ident : $aty:ty ),* ) $( -> $rty:ty )? where kernel $x:literal ) => {
         $crate::paste!(
             #[used]
             #[allow(non_upper_case_globals)]
@@ -170,12 +167,12 @@ macro_rules! Import {
             $(#[$attr])*
             #[allow(non_snake_case)]
             #[inline(always)]
-            $vis fn [< $n >]( $( $( $m )? $name : $aty ),* ) $( -> $rty )? {
+            $vis fn [< $n >]( $( $( mut )? $name : $aty ),* ) $( -> $rty )? {
                 (unsafe{core::mem::transmute::<_, fn ( $( $aty ),* ) $( -> $rty )?>([< _ $n >].0 )})( $( $name ),* )
             }
         );
     };
-    ( $(#[$attr:meta])* $vis:vis fn $o:ident as $n:ident ( $( $( $m:tt )? $name:ident : $aty:ty ),* ) $( -> $rty:ty )? where $x:literal ) => {
+    ( $(#[$attr:meta])* $vis:vis fn $o:ident as $n:ident ( $( $( mut )? $name:ident : $aty:ty ),* ) $( -> $rty:ty )? where $x:literal ) => {
         $crate::paste!(
             #[used]
             #[allow(non_upper_case_globals)]
@@ -185,15 +182,15 @@ macro_rules! Import {
             $(#[$attr])*
             #[allow(non_snake_case)]
             #[inline(always)]
-            $vis fn [< $n >]( $( $( $m )? $name : $aty ),* ) $( -> $rty )? {
+            $vis fn [< $n >]( $( $( mut )? $name : $aty ),* ) $( -> $rty )? {
                 (unsafe{core::mem::transmute::<_, fn ( $( $aty ),* ) $( -> $rty )?>([< _ $n >].0 )})( $( $name ),* )
             }
         );
     };
-    ( $(#[$attr:meta])* $vis:vis fn $o:ident as $n:ident ( $( $( $m:tt )? $name:ident : $aty:ty ),* ) $( -> $rty:ty )? where kernel $x:literal $b:block ) => {
+    ( $(#[$attr:meta])* $vis:vis fn $o:ident as $n:ident ( $( $( mut )? $name:ident : $aty:ty ),* ) $( -> $rty:ty )? where kernel $x:literal $b:block ) => {
         $crate::paste!(
             #[allow(non_snake_case)]
-            fn [< __stub_ $n >]( $( $( $m )? $name : $aty ),* ) $( -> $rty )? { $b }
+            fn [< __stub_ $n >]( $( $( mut )? $name : $aty ),* ) $( -> $rty )? { $b }
 
             #[used]
             #[allow(non_upper_case_globals)]
@@ -203,15 +200,15 @@ macro_rules! Import {
             $(#[$attr])*
             #[allow(non_snake_case)]
             #[inline(always)]
-            $vis fn [< $n >]( $( $( $m )? $name : $aty ),* ) $( -> $rty )? {
+            $vis fn [< $n >]( $( $( mut )? $name : $aty ),* ) $( -> $rty )? {
                 (unsafe{core::mem::transmute::<_, fn ( $( $aty ),* ) $( -> $rty )?>([< _ $n >].0 )})( $( $name ),* )
             }
         );
     };
-    ( $(#[$attr:meta])* $vis:vis fn $o:ident as $n:ident ( $( $( $m:tt )? $name:ident : $aty:ty ),* ) $( -> $rty:ty )? where $x:literal $b:block ) => {
+    ( $(#[$attr:meta])* $vis:vis fn $o:ident as $n:ident ( $( $( mut )? $name:ident : $aty:ty ),* ) $( -> $rty:ty )? where $x:literal $b:block ) => {
         $crate::paste!(
             #[allow(non_snake_case)]
-            fn [< __stub_ $n >]( $( $( $m )? $name : $aty ),* ) $( -> $rty )? { $b }
+            fn [< __stub_ $n >]( $( $( mut )? $name : $aty ),* ) $( -> $rty )? { $b }
 
             #[used]
             #[allow(non_upper_case_globals)]
@@ -221,7 +218,7 @@ macro_rules! Import {
             $(#[$attr])*
             #[allow(non_snake_case)]
             #[inline(always)]
-            $vis fn [< $n >]( $( $( $m )? $name : $aty ),* ) $( -> $rty )? {
+            $vis fn [< $n >]( $( $( mut )? $name : $aty ),* ) $( -> $rty )? {
                 (unsafe{core::mem::transmute::<_, fn ( $( $aty ),* ) $( -> $rty )?>([< _ $n >].0 )})( $( $name ),* )
             }
         );
@@ -230,10 +227,10 @@ macro_rules! Import {
 
 #[macro_export]
 macro_rules! Export {
-    ( $(#[$attr:meta])* $vis:vis fn $x:ident as $n:ident ( $( $( $m:tt )? $name:ident : $aty:ty ),* ) $( -> $rty:ty )? where kernel $v:literal $b:block ) => {
+    ( $(#[$attr:meta])* $vis:vis fn $x:ident as $n:ident ( $( $( mut )? $name:ident : $aty:ty ),* ) $( -> $rty:ty )? where kernel $v:literal $b:block ) => {
         $crate::paste!(
             #[allow(non_snake_case)] $(#[$attr])*
-            $vis fn $x( $( $( $m )? $name : $aty ),* ) $( -> $rty )? { $b }
+            $vis fn $x( $( $( mut )? $name : $aty ),* ) $( -> $rty )? { $b }
 
             #[used]
             #[allow(non_upper_case_globals)]
@@ -242,10 +239,10 @@ macro_rules! Export {
             static $n: $crate::Kexport = $crate::Kexport($x as *const (), $crate::parse_version(stringify!($v)), stringify!($n));
         );
     };
-    ( $(#[$attr:meta])* $vis:vis fn $x:ident as $n:ident ( $( $( $m:tt )? $name:ident : $aty:ty ),* ) $( -> $rty:ty )? where $v:literal $b:block ) => {
+    ( $(#[$attr:meta])* $vis:vis fn $x:ident as $n:ident ( $( $( mut )? $name:ident : $aty:ty ),* ) $( -> $rty:ty )? where $v:literal $b:block ) => {
         $crate::paste!(
             #[allow(non_snake_case)] $(#[$attr])*
-            $vis fn $x( $( $( $m )? $name : $aty ),* ) $( -> $rty )? { $b }
+            $vis fn $x( $( $( mut )? $name : $aty ),* ) $( -> $rty )? { $b }
 
             #[used]
             #[allow(non_upper_case_globals)]
@@ -254,10 +251,10 @@ macro_rules! Export {
             static $n: $crate::ImExport = $crate::ImExport($x as *const (), $crate::parse_version(stringify!($v)));
         );
     };
-    ( $(#[$attr:meta])* $vis:vis fn $n:ident ( $( $( $m:tt )? $name:ident : $aty:ty ),* ) $( -> $rty:ty )? where kernel $x:literal $b:block ) => {
+    ( $(#[$attr:meta])* $vis:vis fn $n:ident ( $( $( mut )? $name:ident : $aty:ty ),* ) $( -> $rty:ty )? where kernel $x:literal $b:block ) => {
         $crate::paste!(
             #[allow(non_snake_case)] $(#[$attr])*
-            fn [< __stub_ $n >]( $( $( $m )? $name : $aty ),* ) $( -> $rty )? { $b }
+            fn [< __stub_ $n >]( $( $( mut )? $name : $aty ),* ) $( -> $rty )? { $b }
 
             #[used]
             #[allow(non_upper_case_globals)]
@@ -266,10 +263,10 @@ macro_rules! Export {
             $vis static $n: $crate::Kexport = $crate::Kexport([< __stub_ $n >] as *const (), $crate::parse_version(stringify!($x)), stringify!($n));
         );
     };
-    ( $(#[$attr:meta])* $vis:vis fn $n:ident ( $( $( $m:tt )? $name:ident : $aty:ty ),* ) $( -> $rty:ty )? where $x:literal $b:block ) => {
+    ( $(#[$attr:meta])* $vis:vis fn $n:ident ( $( $( mut )? $name:ident : $aty:ty ),* ) $( -> $rty:ty )? where $x:literal $b:block ) => {
         $crate::paste!(
             #[allow(non_snake_case)] $(#[$attr])*
-            fn [< __stub_ $n >]( $( $( $m )? $name : $aty ),* ) $( -> $rty )? { $b }
+            fn [< __stub_ $n >]( $( $( mut )? $name : $aty ),* ) $( -> $rty )? { $b }
 
             #[used]
             #[allow(non_upper_case_globals)]
