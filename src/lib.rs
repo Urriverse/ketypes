@@ -34,7 +34,7 @@ pub use sched::*;
 pub use dev::*;
 
 #[repr(C)] pub struct Export(pub *const (), pub u64);
-
+#[repr(C)] pub struct Kexport(pub *const (), pub u64, pub *const str);
 #[repr(C)] pub struct Import(pub *const (), pub u64);
 
 unsafe impl core::marker::Send for Export {}
@@ -157,7 +157,7 @@ macro_rules! Export {
         #[used]
         #[allow(non_upper_case_globals)]
         #[linkme::distributed_slice(crate::KMI_TABLE)]
-        static [< Ke $n >]: $crate::Export = $crate::Export($i as *const (), parse_version(stringify!($x)));
+        static [< Ke $n >]: $crate::Kexport = $crate::Kexport($i as *const (), parse_version(stringify!($x)), stringify!($n));
         );
     };
     ($n:ident, since kernel $x:literal) => {
@@ -165,7 +165,7 @@ macro_rules! Export {
         #[used]
         #[allow(non_upper_case_globals)]
         #[linkme::distributed_slice(crate::KMI_TABLE)]
-        static [< Ke $n >]: $crate::Export = $crate::Export($n as *const (), parse_version(stringify!($x)));
+        static [< Ke $n >]: $crate::Kexport = $crate::Kexport($n as *const (), parse_version(stringify!($x)), stringify!($n));
         );
     };
     ($i:ident => $n:ident, since $x:literal) => {
@@ -193,7 +193,7 @@ macro_rules! Export {
             #[allow(non_upper_case_globals)]
             #[unsafe(export_name = concat!("Ke", stringify!($n)))] $(#[$attr])*
             #[linkme::distributed_slice(crate::KMI_TABLE)]
-            $vis static $n: Export = Export([< __stub_ $n >] as *const (), parse_version(stringify!($x)));
+            $vis static $n: Kexport = Kexport([< __stub_ $n >] as *const (), parse_version(stringify!($x)), stringify!($n));
         );
     };
     ( $(#[$attr:meta])* $vis:vis fn $n:ident ( $($name:ident : $aty:ty),* ) $( -> $rty:ty )? where $x:literal $b:block ) => {
