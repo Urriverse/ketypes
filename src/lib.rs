@@ -87,7 +87,7 @@ macro_rules! Import {
             #[used]
             #[allow(non_upper_case_globals)]
             #[unsafe(export_name = concat!("_Ki", stringify!($n)))]
-            static [< Ki $n >]: $crate::Import = $crate::Import($i as *const (), parse_version(stringify!($x)));
+            static [< Ki $n >]: $crate::Import = $crate::Import($i as *const (), $crate::parse_version(stringify!($x)));
         );
     };
 
@@ -96,7 +96,7 @@ macro_rules! Import {
             #[used]
             #[allow(non_upper_case_globals)]
             #[unsafe(export_name = concat!("_Ki", stringify!($n)))]
-            static [< Ki $n >]: $crate::Import = $crate::Import($n as *const (), parse_version(stringify!($x)));
+            static [< Ki $n >]: $crate::Import = $crate::Import($n as *const (), $crate::parse_version(stringify!($x)));
         );
     };
     ( $i:ident => $n:ident, since $x:literal ) => {
@@ -104,7 +104,7 @@ macro_rules! Import {
             #[used]
             #[allow(non_upper_case_globals)]
             #[unsafe(export_name = concat!("_Mi", stringify!($n)))]
-            static [< Mi $n >]: $crate::Import = $crate::Import($i as *const (), parse_version(stringify!($x)));
+            static [< Mi $n >]: $crate::Import = $crate::Import($i as *const (), $crate::parse_version(stringify!($x)));
         );
     };
     ( $n:ident, since $x:literal ) => {
@@ -112,7 +112,7 @@ macro_rules! Import {
             #[used]
             #[allow(non_upper_case_globals)]
             #[unsafe(export_name = concat!("_Mi", stringify!($n)))]
-            static [< Mi $n >]: $crate::Import = $crate::Import($n as *const (), parse_version(stringify!($x)));
+            static [< Mi $n >]: $crate::Import = $crate::Import($n as *const (), $crate::parse_version(stringify!($x)));
         );
     };
     ( $(#[$attr:meta])* $vis:vis fn $n:ident ( $($name:ident : $aty:ty),* ) $( -> $rty:ty )? where kernel $x:literal $b:block ) => {
@@ -123,7 +123,7 @@ macro_rules! Import {
             #[used]
             #[allow(non_upper_case_globals)]
             #[unsafe(export_name = concat!("Ki", stringify!($n)))]
-            static [< _ $n >]: Import = Import([< __stub_ $n >] as *const (), parse_version(stringify!($x)));
+            static [< _ $n >]: Import = Import([< __stub_ $n >] as *const (), $crate::parse_version(stringify!($x)));
 
             $(#[$attr])*
             #[allow(non_snake_case)]
@@ -141,7 +141,7 @@ macro_rules! Import {
             #[used]
             #[allow(non_upper_case_globals)]
             #[unsafe(export_name = concat!("Mi", stringify!($n)))]
-            static [< _ $n >]: Import = Import([< __stub_ $n >] as *const (), parse_version(stringify!($x)));
+            static [< _ $n >]: Import = Import([< __stub_ $n >] as *const (), $crate::parse_version(stringify!($x)));
 
             $(#[$attr])*
             #[allow(non_snake_case)]
@@ -160,7 +160,7 @@ macro_rules! Export {
         #[used]
         #[allow(non_upper_case_globals)]
         #[linkme::distributed_slice(crate::KMI_TABLE)]
-        static [< Ke $n >]: $crate::Kexport = $crate::Kexport($($i)::+ as *const (), parse_version(stringify!($x)), stringify!($n));
+        static [< Ke $n >]: $crate::Kexport = $crate::Kexport($($i)::+ as *const (), $crate::parse_version(stringify!($x)), stringify!($n));
         );
     };
     ($($i:tt)::+, since kernel $x:literal) => {
@@ -168,7 +168,7 @@ macro_rules! Export {
         #[used]
         #[allow(non_upper_case_globals)]
         #[linkme::distributed_slice(crate::KMI_TABLE)]
-        static [< Ke $n >]: $crate::Kexport = $crate::Kexport($($i)::+ as *const (), parse_version(stringify!($x)), stringify!($($i)::+));
+        static [< Ke $n >]: $crate::Kexport = $crate::Kexport($($i)::+ as *const (), $crate::parse_version(stringify!($x)), stringify!($($i)::+));
         );
     };
     ($($i:tt)::+ => $n:ident, since $x:literal) => {
@@ -176,7 +176,7 @@ macro_rules! Export {
         #[used]
         #[allow(non_upper_case_globals)]
         #[linkme::distributed_slice(crate::KMI_TABLE)]
-        static [< Me $n >]: $crate::Export = $crate::Export($($i)::+ as *const (), parse_version(stringify!($x)));
+        static [< Me $n >]: $crate::Export = $crate::Export($($i)::+ as *const (), $crate::parse_version(stringify!($x)));
         );
     };
     ($($i:tt)::+, since $x:literal) => {
@@ -184,7 +184,7 @@ macro_rules! Export {
         #[used]
         #[allow(non_upper_case_globals)]
         #[linkme::distributed_slice(crate::KMI_TABLE)]
-        static [< Me $n >]: $crate::Export = $crate::Export($n as *const (), parse_version(stringify!($x)));
+        static [< Me $n >]: $crate::Export = $crate::Export($n as *const (), $crate::parse_version(stringify!($x)));
         );
     };
     ( $(#[$attr:meta])* $vis:vis fn $n:ident ( $($name:ident : $aty:ty),* ) $( -> $rty:ty )? where kernel $x:literal $b:block ) => {
@@ -196,7 +196,7 @@ macro_rules! Export {
             #[allow(non_upper_case_globals)]
             #[unsafe(export_name = concat!("Ke", stringify!($n)))] $(#[$attr])*
             #[linkme::distributed_slice(crate::KMI_TABLE)]
-            $vis static $n: Kexport = Kexport([< __stub_ $n >] as *const (), parse_version(stringify!($x)), stringify!($n));
+            $vis static $n: Kexport = Kexport([< __stub_ $n >] as *const (), $crate::parse_version(stringify!($x)), stringify!($n));
         );
     };
     ( $(#[$attr:meta])* $vis:vis fn $n:ident ( $($name:ident : $aty:ty),* ) $( -> $rty:ty )? where $x:literal $b:block ) => {
@@ -208,7 +208,7 @@ macro_rules! Export {
             #[allow(non_upper_case_globals)]
             #[unsafe(export_name = concat!("Me", stringify!($n)))] $(#[$attr])*
             #[linkme::distributed_slice(crate::KMI_TABLE)]
-            $vis static $n: Export = Export([< __stub_ $n >] as *const (), parse_version(stringify!($x)));
+            $vis static $n: Export = Export([< __stub_ $n >] as *const (), $crate::parse_version(stringify!($x)));
         );
     };
 }
