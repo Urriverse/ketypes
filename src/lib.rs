@@ -139,6 +139,21 @@ macro_rules! Import {
             }
         );
     };
+    ( $(#[$attr:meta])* $vis:vis fn $n:ident ( $($name:ident : $aty:ty),* ) $( -> $rty:ty )? where $x:literal ) => {
+        $crate::paste!(
+            #[used]
+            #[allow(non_upper_case_globals)]
+            #[unsafe(export_name = concat!("Mi", stringify!($n)))]
+            static [< _ $n >]: $crate::ImExport = $crate::ImExport(0 as *const (), $crate::parse_version(stringify!($x)));
+
+            $(#[$attr])*
+            #[allow(non_snake_case)]
+            #[inline(always)]
+            $vis fn [< $n >]( $( $name : $aty ),* ) $( -> $rty )? {
+                (unsafe{core::mem::transmute::<_, fn ( $( $name : $aty ),* ) $( -> $rty )?>([< _ $n >].0 )})( $( $name ),* )
+            }
+        );
+    };
     ( $(#[$attr:meta])* $vis:vis fn $n:ident ( $($name:ident : $aty:ty),* ) $( -> $rty:ty )? where kernel $x:literal $b:block ) => {
         $crate::paste!(
             #[allow(non_snake_case)]
