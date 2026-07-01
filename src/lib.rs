@@ -7,6 +7,8 @@
 extern crate alloc;
 #[macro_use] extern crate apaque;
 
+pub extern crate linkme;
+
 pub use paste::paste;
 
 pub mod sync;
@@ -154,6 +156,7 @@ macro_rules! Export {
         paste!(
         #[used]
         #[allow(non_upper_case_globals)]
+        #[linkme::distributed_slice(crate::KMI_TABLE)]
         static [< Ke $n >]: $crate::Export = $crate::Export($i as *const (), parse_version(stringify!($x)));
         );
     };
@@ -161,6 +164,7 @@ macro_rules! Export {
         paste!(
         #[used]
         #[allow(non_upper_case_globals)]
+        #[linkme::distributed_slice(crate::KMI_TABLE)]
         static [< Ke $n >]: $crate::Export = $crate::Export($n as *const (), parse_version(stringify!($x)));
         );
     };
@@ -168,6 +172,7 @@ macro_rules! Export {
         paste!(
         #[used]
         #[allow(non_upper_case_globals)]
+        #[linkme::distributed_slice(crate::KMI_TABLE)]
         static [< Me $n >]: $crate::Export = $crate::Export($i as *const (), parse_version(stringify!($x)));
         );
     };
@@ -175,6 +180,7 @@ macro_rules! Export {
         paste!(
         #[used]
         #[allow(non_upper_case_globals)]
+        #[linkme::distributed_slice(crate::KMI_TABLE)]
         static [< Me $n >]: $crate::Export = $crate::Export($n as *const (), parse_version(stringify!($x)));
         );
     };
@@ -186,6 +192,7 @@ macro_rules! Export {
             #[used]
             #[allow(non_upper_case_globals)]
             #[unsafe(export_name = concat!("Ke", stringify!($n)))] $(#[$attr])*
+            #[linkme::distributed_slice(crate::KMI_TABLE)]
             $vis static $n: Export = Export([< __stub_ $n >] as *const (), parse_version(stringify!($x)));
         );
     };
@@ -197,6 +204,7 @@ macro_rules! Export {
             #[used]
             #[allow(non_upper_case_globals)]
             #[unsafe(export_name = concat!("Me", stringify!($n)))] $(#[$attr])*
+            #[linkme::distributed_slice(crate::KMI_TABLE)]
             $vis static $n: Export = Export([< __stub_ $n >] as *const (), parse_version(stringify!($x)));
         );
     };
