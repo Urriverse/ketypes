@@ -31,9 +31,9 @@ pub use util::*;
 pub use sched::*;
 pub use dev::*;
 
-#[repr(C)] pub struct Export(pub *const (), pub u64);
+#[repr(C)] pub struct Export(pub *const (), pub usize);
 
-#[repr(C)] pub struct Import(pub *const (), pub u64);
+#[repr(C)] pub struct Import(pub *const (), pub usize);
 
 unsafe impl core::marker::Send for Export {}
 unsafe impl core::marker::Sync for Export {}
@@ -124,7 +124,7 @@ macro_rules! Import {
             #[allow(non_snake_case)]
             #[inline(always)]
             $vis fn [< $n >]( $( $name : $aty ),* ) $( -> $rty )? {
-                (*unsafe{([< _ $n >].0 as *const fn ( $( $name : $aty ),* ) $( -> $rty )?).as_ref_unchecked()})
+                (*unsafe{([< _ $n >].0 as *const() as fn ( $( $name : $aty ),* ) $( -> $rty )?).as_ref_unchecked()})
                 ( $( $name ),* )
             }
         );
@@ -143,7 +143,7 @@ macro_rules! Import {
             #[allow(non_snake_case)]
             #[inline(always)]
             $vis fn [< $n >]( $( $name : $aty ),* ) $( -> $rty )? {
-                (*unsafe{([< _ $n >].0 as *const fn ( $( $name : $aty ),* ) $( -> $rty )?).as_ref_unchecked()})
+                (*unsafe{([< _ $n >].0 as *const () as fn ( $( $name : $aty ),* ) $( -> $rty )?).as_ref_unchecked()})
                 ( $( $name ),* )
             }
         );
